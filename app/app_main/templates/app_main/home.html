@@ -1,0 +1,19 @@
+{% extends 'app_main/base.html' %}
+
+{% block content %}
+<div class="container">
+    <h1>Página Principal</h1>
+    {% if user.is_authenticated %}
+        <h2>Bienvenido {{ user.get_full_name|default:user.username }}!</h2>
+
+    <form action="{% url 'logout' %}" method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-primary">Cerrar sesión</button>
+    </form>
+    {% else %}
+        <h2>No has iniciado sesión</h2>
+        <p><a href="{% url 'login' %}" class="btn btn-primary">Iniciar Sesión</a></p>
+        <p><a href="{% url 'register' %}" class="btn btn-secondary">Registrarse</a></p>
+    {% endif %}
+</div>
+{% endblock %}
