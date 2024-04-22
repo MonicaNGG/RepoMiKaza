@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.forms import AuthenticationForm
@@ -6,8 +7,27 @@ from django.contrib.auth import authenticate, login, get_user_model
 from django.core.mail import send_mail
 from django.urls import reverse
 from django.conf import settings
-from .forms import CustomSignupForm
+from .forms import CustomSignupForm, CustomLoginForm
 from .models import User
+
+def login_view(request):
+    if request.user.is_authenticated:
+        return redirect('home')
+
+    if request.method == 'POST':
+        form = CustomLoginForm(request=request, data=request.POST)
+        if form.is_valid():
+            username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password')
+            user = authenticate(request, username=username, password=password)
+            if user is not None:
+                login(request, user)
+                return redirect('home')
+            else:
+                form.add_error(None, 'Username or Password is not valid')
+    else:
+        form = CustomLoginForm()
+    return render(request, 'app_account/login.html', {'form': form})
 
 def register(request):
     if request.user.is_authenticated:
@@ -35,25 +55,6 @@ def register(request):
         form = CustomSignupForm()
     return render(request, 'app_account/register.html', {'form': form})
 
-def login_view(request):
-    if request.user.is_authenticated:
-        return redirect('home')  # Redirigir a home si el usuario ya ha iniciado sesión
-    
-    if request.method == 'POST':
-        form = AuthenticationForm(request, data=request.POST)
-        if form.is_valid():
-            username = form.cleaned_data.get('username')
-            password = form.cleaned_data.get('password')
-            user = authenticate(request, username=username, password=password)
-            if user is not None:
-                login(request, user)
-                return redirect('home')  # Asegúrate de tener una vista 'home' definida
-            else:
-                form.add_error(None, 'Username or Password is not valid')
-    else:
-        form = AuthenticationForm()
-    return render(request, 'app_account/login.html', {'form': form})
-
 
 def activate_account(request, token):
     User = get_user_model()
@@ -63,7 +64,9 @@ def activate_account(request, token):
         user.activation_token = None  # Limpiar el token después de la activación
         user.save()
         login(request, user)  # Opcional: iniciar sesión automáticamente después de activar
-        return redirect('home')
+        messages.success(request, 'Your account has been activated successfully! You are now logged in.')
+        return redirect('login')
     except User.DoesNotExist:
-        return redirect('home')
+        messages.error(request, 'Activation link is invalid or has expired.')
+        return redirect('login')
         #return render(request, 'app_account/activation_invalid.html')

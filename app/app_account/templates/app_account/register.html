@@ -3,19 +3,21 @@
 
 {% block title %}Registro{% endblock %}
 
-{% block extracss %}
-<link rel="stylesheet" href="{% static 'css/register.css' %}">
-{% endblock extracss %}
-
 {% block content %}
-<h2>Registro</h2>
-<form method="post" class="needs-validation" novalidate>
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit" class="btn btn-primary">Registrarse</button>
-</form>
+
+<div class="wrapper">
+
+	<h2>Registro</h2>
+
+	<form method="post" class="needs-validation" novalidate>
+		{% csrf_token %}
+		{{ form.as_p }}
+		<button type="submit" class="btn btn-primary">Registrarse</button>
+		<a class="btn btn-secondary btn-block mt-4" href="{% url 'login' %}">Regresar</a>
+	</form>
+
+</div>
+
+
 {% endblock %}
 
-{% block extrajs %}
-<script src="{% static 'js/validate.js' %}"></script>
-{% endblock extrajs %}
