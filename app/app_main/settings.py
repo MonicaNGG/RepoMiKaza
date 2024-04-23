@@ -9,6 +9,8 @@ https://docs.djangoproject.com/en/5.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
+import dj_database_url
+import os 
 
 from pathlib import Path
 
@@ -24,9 +26,9 @@ AUTH_USER_MODEL = 'app_account.User'
 SECRET_KEY = 'django-insecure-dwdjix_&g$(o$yzc%74zo6g@#&e5rd-9^q7was_wdj24u%q+v9'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get("DEBUG", "False").lower() == "true"
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS").split(" ")
 
 
 # Application definition
@@ -83,6 +85,8 @@ DATABASES = {
     }
 }
 
+DATABASES["default"] = dj_database_url.parse("postgres://mikaza_app_user:hzeYnMcYUkL9XtMVKWFPhtohLLSSoKGn@dpg-cojif0m3e1ms73bb5hog-a.oregon-postgres.render.com/mikaza_app")
+# postgres://mikaza_app_user:hzeYnMcYUkL9XtMVKWFPhtohLLSSoKGn@dpg-cojif0m3e1ms73bb5hog-a/mikaza_app
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
