@@ -85,7 +85,11 @@ DATABASES = {
     }
 }
 
-DATABASES["default"] = dj_database_url.parse("postgres://mikaza_app_user:hzeYnMcYUkL9XtMVKWFPhtohLLSSoKGn@dpg-cojif0m3e1ms73bb5hog-a.oregon-postgres.render.com/mikaza_app")
+if DEBUG:
+    DATABASES["default"] = dj_database_url.parse("postgres://mikaza_app_user:hzeYnMcYUkL9XtMVKWFPhtohLLSSoKGn@dpg-cojif0m3e1ms73bb5hog-a.oregon-postgres.render.com/mikaza_app")
+else:
+    DATABASES["default"] = dj_database_url.parse("postgres://mikaza_app_user:hzeYnMcYUkL9XtMVKWFPhtohLLSSoKGn@dpg-cojif0m3e1ms73bb5hog-a/mikaza_app")
+
 # postgres://mikaza_app_user:hzeYnMcYUkL9XtMVKWFPhtohLLSSoKGn@dpg-cojif0m3e1ms73bb5hog-a/mikaza_app
 
 # Password validation
